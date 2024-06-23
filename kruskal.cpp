@@ -91,7 +91,7 @@ void kruskal_with_edge(int x, int y) {
     }
     if (!flag) {
         cout << "Khong tim thay trong so canh giua " << x << " va " << y << endl;
-        return ; // Thoát kh?i hàm n?u không t?m th?y c?nh
+        return ; 
     }
     
     // Them (x,y) vao cay khung
