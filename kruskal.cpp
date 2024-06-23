@@ -5,23 +5,23 @@
 #define MAX 1000
 using namespace std;
 
-// C?u trúc bi?u di?n m?t c?nh v?i 3 thu?c tính: ð?nh b?t ð?u, ð?nh k?t thúc, và tr?ng s?
+
 struct Edge {
-    int u;
-    int v;
-    int w;
+    int u;//dinh bat dau
+    int v;//dinh ket thuc
+    int w;//trong so
     bool operator<(const Edge& other) const {
-        return w < other.w; // So sánh tr?ng s? c?a các c?nh ð? s?p x?p
+        return w < other.w; 
     }
-};
+};  
 
-// Khai báo các bi?n toàn c?c
-int n, m; // S? ð?nh và s? c?nh
-vector<Edge> edges; // Danh sách các c?nh
-int parent[MAX]; // M?ng lýu cha c?a m?i ð?nh trong cây
-int sz[MAX]; // M?ng lýu kích thý?c c?a m?i t?p h?p
+//khai bao bien toan cuc
+vector<Edge> edges; 
+int n, m;
+int parent[MAX]; 
+int sz[MAX]; 
 
-// Hàm kh?i t?o các t?p h?p r?i r?c ban ð?u
+// ham gan nhan
 void makeset() {
     for (int i = 0; i < n; i++) {
         parent[i] = i;
@@ -29,18 +29,18 @@ void makeset() {
     }
 }
 
-// Hàm t?m t?p h?p ð?i di?n c?a ð?nh v
+//ham tim tap hop dai dien cua dinh v
 int findset(int v) {
     if (v == parent[v])
         return v;
-    return parent[v] = findset(parent[v]); // T?i ýu b?ng cách nén ðý?ng ði
+    return parent[v] = findset(parent[v]); //de quy toi uu duong di
 }
 
-// Hàm h?p nh?t hai t?p h?p ch?a a và b
+//ham ket hop cac tap hop chua a va b
 bool unionset(int a, int b) {
     a = findset(a);
     b = findset(b);
-    if (a == b) return false; // N?u cùng m?t t?p h?p th? không h?p nh?t
+    if (a == b) return false; //cung 1 tap hop thi khong ket hop
     if (sz[a] < sz[b])
         swap(a, b);
     parent[b] = a;
@@ -48,11 +48,11 @@ bool unionset(int a, int b) {
     return true;
 }
 
-// Hàm th?c hi?n thu?t toán Kruskal ð? t?m cây khung c?c ti?u
+// ham krusual
 void kruskal() {
-    vector<Edge> mst; // Danh sách các c?nh c?a cây khung c?c ti?u
-    int d = 0; // T?ng tr?ng s? c?a cây khung c?c ti?u
-    sort(edges.begin(), edges.end()); // S?p x?p các c?nh theo tr?ng s?
+    vector<Edge> mst; //danh sach chua cac canh cua cay khung cuc tieu
+    int d = 0; // tong trong so cua cay khung cuc tieu
+    sort(edges.begin(), edges.end()); //sap xep trong so tang dan
     for (int i = 0; i < m; i++) {
         if (mst.size() == n - 1)
             break;
@@ -63,7 +63,7 @@ void kruskal() {
         }
     }
     if (mst.size() != n - 1) {
-        cout << "Do thi khong lien thong !\n"; // Ð? th? không liên thông
+        cout << "Do thi khong lien thong !\n"; 
     }
     else {
         cout << "MST: " << d << endl;
@@ -73,28 +73,33 @@ void kruskal() {
     }
 }
 
-// Hàm th?c hi?n thu?t toán Kruskal nhýng luôn ch?a c?nh (x, y)
+// ham krusal nhung chua  (x, y)
 void kruskal_with_edge(int x, int y) {
-    vector<Edge> mst; // Danh sách các c?nh c?a cây khung c?c ti?u
-    int d = 0; // T?ng tr?ng s? c?a cây khung c?c ti?u
-    sort(edges.begin(), edges.end()); // S?p x?p các c?nh theo tr?ng s?
+    vector<Edge> mst; 
+    int d = 0; 
+    sort(edges.begin(), edges.end());
 
-    // T?m và lýu tr?ng s? c?a c?nh (x, y)
+    // tim luu trong so (x,y);
     int weight_xy = -1;
+    bool flag = false;
     for (const auto& edge : edges) {
         if ((edge.u == x && edge.v == y) || (edge.u == y && edge.v == x)) {
             weight_xy = edge.w;
-            break;
+            flag = true;
+                break;// dung vong lap khi ko tim thay canh
         }
     }
-
-    // Thêm c?nh (x, y) vào cây khung
+    if (!flag) {
+        cout << "Khong tim thay trong so canh giua " << x << " va " << y << endl;
+        return ; // Thoát kh?i hàm n?u không t?m th?y c?nh
+    }
+    
+    // Them (x,y) vao cay khung
     if (unionset(x, y)) {
         mst.push_back({ x, y, weight_xy });
         d += weight_xy;
     }
 
-    // Ti?p t?c thu?t toán Kruskal
     for (int i = 0; i < m; i++) {
         if (mst.size() == n - 1)
             break;
@@ -105,7 +110,7 @@ void kruskal_with_edge(int x, int y) {
         }
     }
     if (mst.size() != n - 1) {
-        cout << "Do thi khong lien thong !\n"; // Ð? th? không liên thông
+        cout << "Do thi khong lien thong !\n"; 
     }
     else {
         cout << "MST voi canh (" << x << ", " << y << "): " << d << endl;
@@ -115,32 +120,32 @@ void kruskal_with_edge(int x, int y) {
     }
 }
 
-// Hàm ð?c d? li?u ð? th? t? file
+//ham doc du lieu tu file
 void input() {
     ifstream infile("input.txt");
     if (!infile) {
         cerr << "Khong mo duoc file!" << endl;
         exit(1);
     }
-    infile >> n >> m; // Ð?c s? ð?nh và s? c?nh
-    edges.resize(m); // Ði?u ch?nh kích thý?c danh sách c?nh
+    infile >> n >> m; 
+    edges.resize(m); 
     for (int i = 0; i < m; ++i) {
-        infile >> edges[i].u >> edges[i].v >> edges[i].w; // Ð?c t?ng c?nh
+        infile >> edges[i].u >> edges[i].v >> edges[i].w; 
     }
     infile.close();
 }
 
 int main() {
-    input(); // Ð?c d? li?u ð?u vào
-    makeset(); // Kh?i t?o các t?p h?p
-    kruskal(); // T?m cây khung c?c ti?u thông thý?ng
+    input(); 
+    makeset(); 
+    kruskal(); 
 
     int x, y;
     cout << "Nhap canh (x, y) phai co trong cay khung cuc tieu: ";
-    cin >> x >> y; // Ð?c c?nh (x, y) t? bàn phím
+    cin >> x >> y; 
 
-    makeset(); // Kh?i t?o l?i các t?p h?p
-    kruskal_with_edge(x, y); // T?m cây khung c?c ti?u ch?a c?nh (x, y)
+    makeset(); 
+    kruskal_with_edge(x, y); 
 
     return 0;
 }
